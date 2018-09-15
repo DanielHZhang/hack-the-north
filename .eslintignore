@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+node_modules/
+dist/
+assets/
+.eslintrc
+.gitignore
+README.md
+package.json
+yarn.lock
