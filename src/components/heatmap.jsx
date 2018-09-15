@@ -6,11 +6,10 @@ class Heatmap extends Component {
     this.state = {};
   }
 
-
-
   render() {
     console.log('the props', this.props);
-    return <div className='heat' />;
+    const zoom = this.props.$geoService.getZoom();
+    return <div className='heat' style={{width: `${5 * zoom}px`, height: `${5 * zoom}px`}} />;
   }
 }
 
