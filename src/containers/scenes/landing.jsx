@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {Layout, Button, Row, Icon} from 'antd';
 import {Trail, interpolate, animated} from 'react-spring';
+import Particles from 'particlesjs';
 
 class Landing extends PureComponent {
   static propTypes = {};
@@ -20,6 +21,11 @@ class Landing extends PureComponent {
   componentDidMount() {
     this.screenWidth = window.screen.width;
     setTimeout(() => this.setState({loaded: true}), 1000);
+    Particles.init({
+      selector: '#background',
+      connectParticles: true,
+      color: '#ffffff',
+    });
   }
 
   renderTitle() {
@@ -43,7 +49,7 @@ class Landing extends PureComponent {
             translateX = x * i - 15;
           }
           const style = {
-            left: `${(this.screenWidth / 2) - 330}px`,
+            left: `${this.screenWidth / 2 - 330}px`,
             opacity,
             transform: `translate(${translateX}px) rotateY(${deg}deg)`,
           };
@@ -76,7 +82,12 @@ class Landing extends PureComponent {
   }
 
   render() {
-    return <Layout className='landing'>{this.renderLoading()}</Layout>;
+    return (
+      <Layout className='landing'>
+        <canvas id='background' />
+        <div style={{zIndex: 10}}>{this.renderLoading()}</div>
+      </Layout>
+    );
   }
 }
 

@@ -1,4 +1,15 @@
 .landing {
+  background-color: rgba(0, 0, 0, 0.363);
+
+  #background {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
   .header {
     margin-top: 6rem;
     text-align: center;
