@@ -46,21 +46,6 @@ const certificates = {
 https.createServer(certificates, app).listen(443, () => console.log('Server started on port 443.'));
 
 
-<<<<<<< HEAD
-// // setting up firebase connection
-// var config = {
-//     apiKey: "AIzaSyA7NJkHK-UA--JVDQtUj7hX9IXWiKYuw-I",
-//     authDomain: "mapitude-bdcaa.firebaseapp.com",
-//     databaseURL: "https://mapitude-bdcaa.firebaseio.com",
-//     projectId: "mapitude-bdcaa",
-//     storageBucket: "mapitude-bdcaa.appspot.com",
-//     messagingSenderId: "104504510528"
-//   };
-//   firebase.initializeApp(config);
-
-// // Reference database
-// var database = firebase.database();
-=======
 // setting up firebase connection
 // const config = {
 //   apiKey: "apiKey",
@@ -89,4 +74,3 @@ https.createServer(certificates, app).listen(443, () => console.log('Server star
 // const file = ref.put(file).then(function(snapshot) {
 //   console.log('Uploaded a blob or file!');
 // });
->>>>>>> a1e5839223db76c1c2f160fc471994a7fdc23e1c

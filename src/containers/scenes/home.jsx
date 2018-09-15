@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {Row, Col} from 'antd';
-import Map from '../../components/map-component';
+import Map from '../../components/map';
 import SideBar from '../../components/sidebar';
 import NavBar from '../../components/navbar';
 
@@ -20,9 +20,7 @@ class Home extends PureComponent {
         <NavBar />
         <Row className='mapWidget'>
           <SideBar />
-          <Col span={19} className='mapContainer'>
-            <Map />
-          </Col>
+          <Map />
         </Row>
       </div>
     );
