@@ -6,7 +6,10 @@ class Heatmap extends Component {
     this.state = {};
   }
 
+
+
   render() {
+    console.log('the props', this.props);
     return <div className='heat' />;
   }
 }
