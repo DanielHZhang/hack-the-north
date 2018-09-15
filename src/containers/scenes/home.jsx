@@ -1,6 +1,8 @@
 import React, {PureComponent} from 'react';
 import {Row, Col} from 'antd';
 import Map from '../../components/map-component';
+import SideBar from '../../components/sidebar';
+import NavBar from '../../components/navbar';
 
 class Home extends PureComponent {
   static propTypes = {};
@@ -15,13 +17,11 @@ class Home extends PureComponent {
   render() {
     return (
       <div>
-        <Row className='headerRow'>
-          <h1>Header stuff</h1>
-        </Row>
+        <NavBar />
         <Row className='mapWidget'>
-          <Col span={5} className='mapFilters'>Tags</Col>
+          <SideBar />
           <Col span={19} className='mapContainer'>
-            <Map/>
+            <Map />
           </Col>
         </Row>
       </div>
