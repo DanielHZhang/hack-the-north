@@ -5,9 +5,16 @@ import {connect} from 'react-redux';
 import {Layout} from 'antd';
 import Home from './containers/scenes/home';
 import NotFound from './containers/scenes/not-found';
+import Landing from './containers/scenes/landing';
 
 class App extends PureComponent {
   routes = [
+    {
+      path: '/landing',
+      component: Landing,
+      exact: true,
+      auth: false,
+    },
     {
       path: '/',
       component: Home,
