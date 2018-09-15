@@ -1,3 +1,7 @@
 node_modules/
 yarn.lock
 build/
+tdTransactions.json
+yarn-error.log
+.DS_Store
+.simpleTranData.json.swp
