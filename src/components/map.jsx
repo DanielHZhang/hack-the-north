@@ -8,6 +8,22 @@ import '@firebase/storage';
 import tranData from '../simpleTranData.json';
 // import file from '../tdfile.json';
 
+const addressMap = {};
+
+const heatmapOptions = {
+  options: {
+    radius: 20,
+    opacity: 0.7,
+    gradient: ['rgba(0, 255, 255, 0)', 'rgba(255, 0, 255, 1)', 'rgba(255, 255, 0, 2)'],
+  },
+  positions: [
+    {
+      lat: 43.5,
+      lng: -80.6,
+    },
+  ],
+};
+
 const firebaseConfig = {
   apiKey: 'AIzaSyA7NJkHK-UA--JVDQtUj7hX9IXWiKYuw-I',
   authDomain: 'mapitude-bdcaa.firebaseapp.com',
@@ -24,49 +40,64 @@ class Map extends Component {
       firebaseStorage: undefined,
       transData: undefined,
       center: {
-        lat: 43.4653563,
-        lng: -80.5414864,
+        lat: 43.7050628845,
+        lng: -79.3491207954,
       },
       zoom: 14,
       data: [
-        {
-          lat: '43.4653563',
-          lng: '-80.5414864',
-        },
-        {
-          lat: '42.4653563',
-          lng: '-81.5414864',
-        },
+        // {
+        //   lat: '42.4653563',
+        //   lng: '-81.5414864',
+        // },
       ],
     };
   }
 
   componentDidMount() {
-    console.log(tranData);
-    // const obj = [];
-    // // console.log(tdTransactionJSON);
-    // tdTransactionJSON.map((cardObject, i) => {
-    //   if (cardObject.Type == 'VISA' && obj.length < 25) {
-    //     obj.push({
-    //       balance: cardObject.Balance,
-    //       customerName: cardObject.Cards[0].NameOnCard,
-    //       customerId: cardObject.Cards[0].CustomerId,
-    //       transactions: cardObject.Transactions.splice(1)
-    //     });
-    //   }
-    // });
-    // // console.log('final!', obj);
-    // this.setState({transData: obj});
-    // Firebase.initializeApp(firebaseConfig);
-    // this.setState({firebaseStorage: Firebase.storage()});
+    const transArr = [];
+
+    tranData.forEach((user) => {
+      user.transactions.forEach((transaction) => {
+        // LocationLatitude
+        // LocationLongitude
+        if (transaction.LocationLatitude && transaction.LocationLongitude) {
+          addressMap[transaction.LocationStreet] = {
+            lat: transaction.LocationLatitude.toString(),
+            lng: transaction.LocationLongitude.toString(),
+            merchantName: transaction.MerchantName,
+            address: transaction.LocationStreet,
+          };
+
+          transArr.push({
+            lat: transaction.LocationLatitude.toString(),
+            lng: transaction.LocationLongitude.toString(),
+          });
+        }
+      });
+    });
+    this.setState({data: transArr});
   }
 
   renderHeatDots() {
-    return this.state.data.map((e, i) => <HeatDot key={i} {...e} />);
+    const heatMapsArr = [];
+    console.log(addressMap);
+    let c = 0;
+    for (const tranDetails in addressMap) {
+      heatMapsArr.push(
+        <HeatDot
+          lat={addressMap[tranDetails].lat}
+          lng={addressMap[tranDetails].lng}
+          key={c}
+          data={addressMap[tranDetails]}
+        />
+      );
+      c++;
+    }
+    return heatMapsArr;
   }
 
   render() {
-    console.log(this.state.transData);
+    heatmapOptions.positions = this.state.data;
     return (
       <Col span={19} className='mapContainer'>
         <div className='fullscreen'>
@@ -74,6 +105,8 @@ class Map extends Component {
             bootstrapURLKeys={{key: GOOGLE_API_KEY}}
             defaultCenter={this.state.center}
             defaultZoom={this.state.zoom}
+            heatmapLibrary={true}
+            heatmap={heatmapOptions}
           >
             {this.renderHeatDots()}
           </GoogleMapReact>
@@ -84,19 +117,3 @@ class Map extends Component {
 }
 
 export default Map;
-
-// const heatmapOptions = {
-//   options: {
-//     radius: 20,
-//     opacity: 0.7,
-//     gradient: ['rgba(0, 255, 255, 0)', 'rgba(255, 0, 255, 1)', 'rgba(255, 255, 0, 2)'],
-//   },
-//   positions: [
-//     {
-//       lat: 43.5,
-//       lng: -80.6,
-//     },
-//   ],
-// };
-// heatmapLibrary={true}
-// heatmap={heatmapOptions}

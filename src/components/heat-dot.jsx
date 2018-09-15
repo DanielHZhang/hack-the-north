@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Tooltip} from 'antd';
+import {Popover} from 'antd';
 
 class Heatmap extends Component {
   static propTypes = {
@@ -12,18 +12,22 @@ class Heatmap extends Component {
     this.state = {};
   }
 
+  locationInfo = <div>{this.props.data.address}</div>;
+
   render() {
-    console.log('the props', this.props);
     const zoom = this.props.$geoService.getZoom();
     const style = {
       width: `${2 * zoom}px`,
       height: `${2 * zoom}px`,
+      transform: 'translateX(-15px)',
     };
 
     return (
-      <Tooltip title='test'>
-        <div className='heat' style={style} onMouseEnter={() => console.log('test')} />
-      </Tooltip>
+      // null
+      // <div></div>
+      <Popover title={this.props.data.merchantName} style={{transform: 'translateX(-5px)'}} content={this.locationInfo}>
+        <div className='' style={style} onMouseEnter={() => console.log('test')} />
+      </Popover>
     );
   }
 }
