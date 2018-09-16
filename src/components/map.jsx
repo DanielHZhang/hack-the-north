@@ -4,8 +4,9 @@ import HeatDot from './heat-dot';
 import {GOOGLE_API_KEY} from '../keys';
 import {Col, Icon} from 'antd';
 import Firebase from 'firebase';
-import '@firebase/storage';
-import tranData from '../simpleTranData.json';
+// import '@firebase/storage';
+// import tranData from '../simpleTranData.json';
+import customerData from '../CustomerData.json';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA7NJkHK-UA--JVDQtUj7hX9IXWiKYuw-I',
@@ -30,23 +31,27 @@ class Map extends Component {
       data: [],
     };
     this.addressMap = {};
+    this.tranData = customerData.customerList;
   }
 
   componentDidMount() {
     const transArr = [];
-    tranData.forEach((user) => {
+    this.tranData.forEach((user) => {
+      if (!user.transactions) {
+        return;
+      }
       user.transactions.forEach((transaction) => {
-        if (transaction.LocationLatitude && transaction.LocationLongitude) {
+        if (transaction.locationLatitude && transaction.locationLongitude) {
           this.addressMap[transaction.LocationStreet] = {
-            lat: transaction.LocationLatitude.toString(),
-            lng: transaction.LocationLongitude.toString(),
-            merchantName: transaction.MerchantName,
-            address: transaction.LocationStreet,
+            lat: transaction.locationLatitude.toString(),
+            lng: transaction.locationLongitude.toString(),
+            merchantName: transaction.merchantName,
+            address: transaction.locationStreet,
           };
 
           transArr.push({
-            lat: transaction.LocationLatitude.toString(),
-            lng: transaction.LocationLongitude.toString(),
+            lat: transaction.locationLatitude.toString(),
+            lng: transaction.locationLongitude.toString(),
           });
         }
       });
@@ -59,6 +64,8 @@ class Map extends Component {
   }
 
   render() {
+    // console.log('DATA: ', custData);
+
     const heatmapOptions = {
       options: {
         radius: 40,
