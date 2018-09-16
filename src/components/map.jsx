@@ -31,7 +31,7 @@ class Map extends Component {
       data: [],
     };
     this.addressMap = {};
-    this.tranData = customerData.customerList;
+    this.clientData = customerData.customerList;
   }
 
   componentDidMount() {
@@ -41,8 +41,8 @@ class Map extends Component {
     // Now map with each address associated with it's stats.
 
     const transArr = [];
-    console.log(this.tranData);
-    this.tranData.forEach((user) => {
+    console.log(this.clientData);
+    this.clientData.forEach((user) => {
       if (!user.transactions) {
         return;
       }
@@ -67,6 +67,11 @@ class Map extends Component {
       });
     });
     this.setState({data: transArr});
+    const streets = getAllStreets(this.clientData);
+    streets.forEach((street) => {
+      console.log(getAverageAge(this.clientData, street));
+    });
+    // console.log(getAverageAge(this.clientData, this.clientData[0].));
   }
 
   renderHeatDots() {
@@ -104,6 +109,38 @@ class Map extends Component {
       </Col>
     );
   }
+}
+
+function getAllStreets(fullJson) {
+  const streets = {};
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (streets[t.locationStreet]) {
+        return;
+      }
+      streets[t.locationStreet] = t.locationStreet;
+    });
+  });
+  return Object.values(streets);
+}
+
+function getAverageAge(fullJson, street) {
+  const ages = [];
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        ages.push(client.age);
+      }
+    });
+  });
+  const total = ages.reduce((acc, val) => acc + val, 0);
+  return total / ages.length;
 }
 
 export default Map;
