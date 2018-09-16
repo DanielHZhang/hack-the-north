@@ -142,8 +142,8 @@ class Map extends Component {
           {this.state.renderMap ? <GoogleMapReact
             className='google-map'
             bootstrapURLKeys={{key: GOOGLE_API_KEY}}
-            defaultCenter={this.defaultCenter}
-            defaultZoom={this.defaultZoom}
+            defaultCenter={this.state.center}
+            defaultZoom={this.state.zoom}
             heatmapLibrary={true}
             heatmap={heatmapOptions}
             onDrag={this.stopRenderingDots}

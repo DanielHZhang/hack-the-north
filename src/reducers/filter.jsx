@@ -1,6 +1,6 @@
-import {FILTER_BY_MALE, FILTER_BY_FEMALE, FILTER_BY_BOTH} from '../actions';
+import {FILTER_BY_MALE, FILTER_BY_FEMALE, FILTER_BY_BOTH, FILTER_BY_NAME, FILTER_BY_SINGLE, FILTER_BY_MARRIED} from '../actions';
 import JSONData from '../CustomerData.json';
-import {getAverage, getCount, getByGender} from './utils';
+import {getAverage, getCount, getByGender, getByName, getByMaritalStatus} from './utils';
 
 function generateInitialState() {
   const clientData = JSONData.customerList;
@@ -58,6 +58,24 @@ export function filterReducer(state = generateInitialState(), action) {
         heatMapFullData: getByGender(JSONData.customerList, 'both'),
       };
     }
+    case FILTER_BY_NAME: {
+      return {
+        ...state,
+        heatMapFullData: getByName(JSONData.customerList, action.payload),
+      };
+    }
+    case FILTER_BY_SINGLE: {
+      return {
+        ...state,
+        heatMapFullData: getByMaritalStatus(JSONData.customerList, 'single'),
+      };
+    }
+    case FILTER_BY_MARRIED: {
+      return {
+        ...state,
+        heatMapFullData: getByMaritalStatus(JSONData.customerList, 'married'),
+      };
+    }
     default: {
       return state;
     }
@@ -67,7 +85,7 @@ export function filterReducer(state = generateInitialState(), action) {
 function getInitialIds() {
   const clientData = JSONData.customerList;
   console.log(clientData);
-  return clientData.map((client) => client.id);
+  return clientData.map((client) => `${client.givenName} ${client.surname}`);
 }
 
 export function idReducer(state = getInitialIds(), action) {

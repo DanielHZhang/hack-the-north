@@ -92,3 +92,52 @@ export function getByGender(fullJson, gender) {
   });
   return heatMapFullData;
 }
+
+export function getByName(fullJson, name) {
+  const heatMapFullData = [];
+
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    if (`${client.givenName} ${client.surname}` === name) {
+      client.transactions.forEach((t) => {
+        heatMapFullData.push({
+          lat: t.locationLatitude,
+          lng: t.locationLongitude,
+        });
+      });
+    }
+  });
+  return heatMapFullData;
+}
+
+export function getByMaritalStatus(fullJson, maritalStatus) {
+  const heatMapFullData = [];
+
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    if (maritalStatus === 'married') {
+      if (client.relationshipStatus.toLowerCase() === maritalStatus) {
+        client.transactions.forEach((t) => {
+          heatMapFullData.push({
+            lat: t.locationLatitude,
+            lng: t.locationLongitude,
+          });
+        });
+      }
+    } else {
+      if (client.relationshipStatus.toLowerCase() !== 'married') {
+        client.transactions.forEach((t) => {
+          heatMapFullData.push({
+            lat: t.locationLatitude,
+            lng: t.locationLongitude,
+          });
+        });
+      }
+    }
+  });
+  return heatMapFullData;
+}

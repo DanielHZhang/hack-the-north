@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {Col, Menu, Radio, Select, Row, Layout} from 'antd';
+import {Col, Menu, Radio, Select, Row, Layout, Slider, Divider} from 'antd';
 import {filterBy} from '../actions';
 
 const {Sider} = Layout;
@@ -18,21 +18,42 @@ class SideBar extends PureComponent {
     this.state = {};
   }
 
+  onMartialChange = (event) => {
+    // console.log(event);
+    this.props.filterBy(event.target.value);
+  }
+
   onGenderChange = (event) => {
     console.log(event);
     this.props.filterBy(event.target.value);
   };
 
   renderOptions(array) {
-    return array.map((e) => <Option key={e}>{e.slice(37)}</Option>);
+    return array.map((e) => <Option key={e}>{e}</Option>).concat(<Option key='everyone'>Everyone</Option>);
   }
 
+  onSelect = (name) => {
+    if (name === 'everyone') {
+      return this.props.filterBy('both');
+    }
+    // console.log(name);
+    this.props.filterBy('name', name);
+  };
+
   render() {
+    const marks = {0: '$0', 500000: '$500k'};
     return (
       <Sider className='side-bar' width={250} theme='light'>
         <Row>
-          <Group onChange={this.onGenderChange}>
-            Gender:
+          <div style={{fontWeight: 500, marginBottom: '4px'}}>Search by name:</div>
+          <Select defaultValue='Everyone' showSearch={true} onSelect={this.onSelect}>
+            {this.renderOptions(this.props.names)}
+          </Select>
+        </Row>
+        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Row>
+          <div style={{fontWeight: 500, marginBottom: '4px'}}>Gender:</div>
+          <Group onChange={this.onGenderChange} defaultValue='both'>
             <Radio className='radio-item' value='both'>
               All
             </Radio>
@@ -44,11 +65,30 @@ class SideBar extends PureComponent {
             </Radio>
           </Group>
         </Row>
+        <Divider style={{margin: '12px 0 6px 0'}} />
         <Row>
-          Search by id:
-          <Select defaultValue={this.props.ids[0]} showSearch={true}>
-            {this.renderOptions(this.props.ids)}
-          </Select>
+          <div style={{fontWeight: 500, marginBottom: '4px'}}>Marital status:</div>
+          <Group onChange={this.onMartialChange} defaultValue='marital-both'>
+            <Radio className='radio-item' value='marital-both'>
+              All
+            </Radio>
+            <Radio className='radio-item' value='single'>
+              Single
+            </Radio>
+            <Radio className='radio-item' value='married'>
+              Married
+            </Radio>
+          </Group>
+        </Row>
+        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Row>
+          <div style={{fontWeight: 500, marginBottom: '4px'}}>Annual income:</div>
+          <Slider range={true} min={0} max={500000} marks={marks} />
+        </Row>
+        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Row>
+          <div style={{fontWeight: 500, marginBottom: '4px'}}>Age range:</div>
+          <Slider range={true} />
         </Row>
       </Sider>
     );
@@ -57,7 +97,7 @@ class SideBar extends PureComponent {
 
 function mapStateToProps({ids}) {
   return {
-    ids,
+    names: ids,
   };
 }
 
