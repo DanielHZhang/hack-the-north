@@ -32,6 +32,7 @@ class Map extends Component {
     };
     this.addressMap = {};
     this.clientData = customerData.customerList;
+    this.businessData = {};
   }
 
   componentDidMount() {
@@ -69,9 +70,10 @@ class Map extends Component {
     this.setState({data: transArr});
     const streets = getAllStreets(this.clientData);
     streets.forEach((street) => {
-      console.log(getAverageAge(this.clientData, street));
+      const averageAge = getAverageAge(this.clientData, street);
     });
-    // console.log(getAverageAge(this.clientData, this.clientData[0].));
+
+    console.log(this.businessData);
   }
 
   renderHeatDots() {
