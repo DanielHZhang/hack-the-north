@@ -7,6 +7,7 @@ import Firebase from 'firebase';
 // import '@firebase/storage';
 // import tranData from '../simpleTranData.json';
 import customerData from '../CustomerData.json';
+import Business from './business';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA7NJkHK-UA--JVDQtUj7hX9IXWiKYuw-I',
@@ -146,6 +147,7 @@ class Map extends Component {
       zoom: 14,
       data: [],
       renderDots: true,
+      merchantId: '',
     };
     this.addressMap = {};
     this.clientData = customerData.customerList;
@@ -245,6 +247,7 @@ class Map extends Component {
           >
             {this.renderHeatDots()}
           </GoogleMapReact>
+          <Business />
         </div>
       </Col>
     );
