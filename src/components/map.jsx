@@ -202,7 +202,7 @@ class Map extends Component {
 
   renderHeatDots() {
     return Object.values(this.addressMap).map((address, i) => (
-      <HeatDot key={i} {...address} businessData={this.businessData[address.address]} />
+      <HeatDot key={i} {...address} {...this.businessData[address.address]} />
     ));
   }
 

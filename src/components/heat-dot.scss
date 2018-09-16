@@ -1,0 +1,16 @@
+.dot {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.businessData {
+  div {
+    font-weight: 200;
+    font-size: 1rem;
+  }
+
+  .ant-divider {
+    margin: 8px 0;
+  }
+}
