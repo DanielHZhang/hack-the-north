@@ -1,6 +1,8 @@
 .dot {
   &:hover {
     cursor: pointer;
+    background-color: rgba(255, 0, 0, 0.075);
+    border-radius: 50%;
   }
 }
 
@@ -11,7 +13,7 @@
   }
   .ant-popover-inner-content {
     .businessData {
-      min-width: 200px;
+      min-width: 250px;
       color: rgb(63, 63, 63);
       .bold {
         font-weight: 500;

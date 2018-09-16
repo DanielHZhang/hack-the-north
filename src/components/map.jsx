@@ -203,11 +203,9 @@ class Map extends Component {
     });
   }
 
-  onDrag = () => this.state.renderDots && this.setState({renderDots: false});
+  startRenderingDots = () => !this.state.renderDots && this.setState({renderDots: true});
 
-  onMouseUp = () => !this.state.renderDots && this.setState({renderDots: true});
-
-  onMouseLeave = () => !this.state.renderDots && this.setState({renderDots: true});
+  stopRenderingDots = () => this.state.renderDots && this.setState({renderDots: false});
 
   renderHeatDots() {
     if (!this.state.renderDots) {
@@ -231,7 +229,7 @@ class Map extends Component {
       return <Icon type='loading' />;
     }
     return (
-      <Col span={19} className='map-container' onMouseUp={this.onMouseUp}>
+      <Col span={19} className='map-container' onMouseUp={this.startRenderingDots}>
         <div className='map-wrapper fullscreen'>
           <GoogleMapReact
             className='google-map'
@@ -240,8 +238,10 @@ class Map extends Component {
             defaultZoom={this.state.zoom}
             heatmapLibrary={true}
             heatmap={heatmapOptions}
-            onDrag={this.onDrag}
-            onChildMouseLeave={this.onMouseLeave}
+            onDrag={this.stopRenderingDots}
+            onChildMouseLeave={this.startRenderingDots}
+            onZoomAnimationStart={this.stopRenderingDots}
+            onZoomAnimationEnd={this.startRenderingDots}
           >
             {this.renderHeatDots()}
           </GoogleMapReact>
