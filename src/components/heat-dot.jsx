@@ -26,7 +26,7 @@ class Heatmap extends Component {
       <Popover
         trigger='click'
         title={this.props.merchantName}
-        style={{transform: 'translateX(-5px)'}}
+        // style={{transform: 'translateX(-5px)'}}
         content={this.locationInfo}
       >
         <div className='dot' style={style} />

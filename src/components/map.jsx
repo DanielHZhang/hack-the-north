@@ -35,14 +35,24 @@ class Map extends Component {
   }
 
   componentDidMount() {
+    // Loop through all the data with the business address as the the key in the map.
+    // Calculate average age, gender, income, etc and add it to the value in map.
+
+    // Now map with each address associated with it's stats.
+
     const transArr = [];
+    console.log(this.tranData);
     this.tranData.forEach((user) => {
       if (!user.transactions) {
         return;
       }
       user.transactions.forEach((transaction) => {
         if (transaction.locationLatitude && transaction.locationLongitude) {
-          this.addressMap[transaction.LocationStreet] = {
+          const lat = transaction.locationLatitude.toString().substring(0, 6);
+          const long = transaction.locationLongitude.toString().substring(0, 6);
+          const key = lat.concat(long);
+
+          this.addressMap[key] = {
             lat: transaction.locationLatitude.toString(),
             lng: transaction.locationLongitude.toString(),
             merchantName: transaction.merchantName,
