@@ -18,7 +18,7 @@ class NavBar extends PureComponent {
     return (
       <Header className='nav-bar'>
         <Menu mode='horizontal' selectable={false} theme='light'>
-          <Item>Mapitude</Item>
+          <Item>M A P I T U D E</Item>
         </Menu>
       </Header>
     );

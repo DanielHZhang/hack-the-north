@@ -7,6 +7,9 @@
     border-bottom: transparent;
     height: 9.7vh;
     line-height: 9.7vh;
-
+    text-align: center;
+    .ant-menu-item {
+      font-size: 22px;
+    }
   }
 }
