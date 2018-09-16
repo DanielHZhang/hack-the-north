@@ -199,5 +199,78 @@ router.post('/getCustomerPage', async (req, res) => {
   }
 });
 
+const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+const btoa = require("btoa");
+const wml_credentials = new Map();
+
+// NOTE: you must manually construct wml_credentials hash map below using information retrieved
+// from your IBM Cloud Watson Machine Learning Service instance
+
+wml_credentials.set("url", 'https://dataplatform.cloud.ibm.com/ml/deployments/5c11dcc1-816e-4df4-8b8a-7f67986d04c4/test?projectid=9485bb1c-33fc-4cdf-b97c-90cdd92ad353&mlInstanceGuid=10a4648b-7e20-4080-aabe-381842f01da1&context=analytics&flush=true');
+wml_credentials.set("username", 'claudiolener98@gmail.com');
+wml_credentials.set("password", 'Hackthenorth_2018');
+
+function apiGet(url, username, password, loadCallback, errorCallback){
+	const oReq = new XMLHttpRequest();
+	const tokenHeader = "Basic " + btoa((username + ":" + password));
+	const tokenUrl = url + "/v3/identity/token";
+
+	oReq.addEventListener("load", loadCallback);
+	oReq.addEventListener("error", errorCallback);
+	oReq.open("GET", tokenUrl);
+	oReq.setRequestHeader("Authorization", tokenHeader);
+	oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	oReq.send();
+}
+
+function apiPost(scoring_url, token, payload, loadCallback, errorCallback){
+	const oReq = new XMLHttpRequest();
+	oReq.addEventListener("load", loadCallback);
+	oReq.addEventListener("error", errorCallback);
+	oReq.open("POST", scoring_url);
+	oReq.setRequestHeader("Accept", "application/json");
+	oReq.setRequestHeader("Authorization", token);
+	oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+	oReq.send(payload);
+}
+
+router.get('/getWatsonData', async (req, res) => {
+  apiGet(wml_credentials.get("url"),
+    wml_credentials.get("username"),
+    wml_credentials.get("password"),
+    function (res) {
+          let parsedGetResponse;
+          try {
+              parsedGetResponse = JSON.parse(this.responseText);
+          } catch(ex) {
+              // TODO: handle parsing exception
+          }
+          if (parsedGetResponse && parsedGetResponse.token) {
+              const token = parsedGetResponse.token
+              const wmlToken = "Bearer " + token;
+
+              // NOTE: manually define and pass the array(s) of values to be scored in the next line
+            const payload = '{"fields": ["age", "name", "gender", "relationshipStatus", "transactions__currencyAmount", "transactions__merchantName"], "values": [array_of_values_to_be_scored, another_array_of_values_to_be_scored]}';
+            const scoring_url = "https://us-south.ml.cloud.ibm.com/v3/wml_instances/10a4648b-7e20-4080-aabe-381842f01da1/deployments/5c11dcc1-816e-4df4-8b8a-7f67986d04c4/online";
+
+              apiPost(scoring_url, wmlToken, payload, function (resp) {
+                  let parsedPostResponse;
+                  try {
+                      parsedPostResponse = JSON.parse(this.responseText);
+                  } catch (ex) {
+                      // TODO: handle parsing exception
+                  }
+                  console.log("Scoring response");
+                  console.log(parsedPostResponse);
+              }, function (error) {
+                  console.log(error);
+              });
+          } else {
+              console.log("Failed to retrieve Bearer token");
+          }
+    }, function (err) {
+      console.log(err);
+    });
+});
 
 export default router;
