@@ -145,6 +145,7 @@ class Map extends Component {
       },
       zoom: 14,
       data: [],
+      renderDots: true,
     };
     this.addressMap = {};
     this.clientData = customerData.customerList;
@@ -165,9 +166,10 @@ class Map extends Component {
       }
       user.transactions.forEach((transaction) => {
         if (transaction.locationLatitude && transaction.locationLongitude) {
-          const lat = transaction.locationLatitude.toString().substring(0, 6);
-          const long = transaction.locationLongitude.toString().substring(0, 6);
-          const key = lat.concat(long);
+          // const lat = transaction.locationLatitude.toString().substring(0, 6);
+          // const long = transaction.locationLongitude.toString().substring(0, 6);
+          // const key = lat.concat(long);
+          const key = transaction.locationStreet;
 
           this.addressMap[key] = {
             lat: transaction.locationLatitude.toString(),
@@ -183,6 +185,7 @@ class Map extends Component {
         }
       });
     });
+    this.addressMap = Object.values(this.addressMap);
     this.setState({data: transArr});
     getAllStreets(this.clientData).forEach((street) => {
       if (!street) {
@@ -200,8 +203,17 @@ class Map extends Component {
     });
   }
 
+  onDrag = () => this.state.renderDots && this.setState({renderDots: false});
+
+  onMouseUp = () => !this.state.renderDots && this.setState({renderDots: true});
+
+  onMouseLeave = () => !this.state.renderDots && this.setState({renderDots: true});
+
   renderHeatDots() {
-    return Object.values(this.addressMap).map((address, i) => (
+    if (!this.state.renderDots) {
+      return null;
+    }
+    return this.addressMap.map((address, i) => (
       <HeatDot key={i} {...address} {...this.businessData[address.address]} />
     ));
   }
@@ -219,7 +231,7 @@ class Map extends Component {
       return <Icon type='loading' />;
     }
     return (
-      <Col span={19} className='map-container'>
+      <Col span={19} className='map-container' onMouseUp={this.onMouseUp}>
         <div className='map-wrapper fullscreen'>
           <GoogleMapReact
             className='google-map'
@@ -228,6 +240,8 @@ class Map extends Component {
             defaultZoom={this.state.zoom}
             heatmapLibrary={true}
             heatmap={heatmapOptions}
+            onDrag={this.onDrag}
+            onChildMouseLeave={this.onMouseLeave}
           >
             {this.renderHeatDots()}
           </GoogleMapReact>
