@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react';
-import {Col, Menu, Radio} from 'antd';
+import {Col, Menu, Radio, Select} from 'antd';
 
 const {Item} = Menu;
 const {Group} = Radio;
@@ -21,6 +21,9 @@ class SideBar extends PureComponent {
           <Radio className='radio-item' value={1}>Option</Radio>
           <Radio className='radio-item' value={2}>Option 2</Radio>
         </Group>
+        <Select>
+          <Select.Option key='cool'>Test</Select.Option>
+        </Select>
         {/* <Menu>
           <Item>Test</Item>
         </Menu> */}

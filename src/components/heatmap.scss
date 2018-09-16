@@ -1,6 +1,7 @@
-.test {
-  padding: 50px;
-  height: 200px;
+.dot {
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .heat {

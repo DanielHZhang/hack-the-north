@@ -12,7 +12,7 @@ class Heatmap extends Component {
     this.state = {};
   }
 
-  locationInfo = <div>{this.props.data.address}</div>;
+  locationInfo = <div>{this.props.address}</div>;
 
   render() {
     const zoom = this.props.$geoService.getZoom();
@@ -23,10 +23,13 @@ class Heatmap extends Component {
     };
 
     return (
-      // null
-      // <div></div>
-      <Popover title={this.props.data.merchantName} style={{transform: 'translateX(-5px)'}} content={this.locationInfo}>
-        <div className='' style={style} onMouseEnter={() => console.log('test')} />
+      <Popover
+        trigger='click'
+        title={this.props.merchantName}
+        style={{transform: 'translateX(-5px)'}}
+        content={this.locationInfo}
+      >
+        <div className='dot' style={style} />
       </Popover>
     );
   }
