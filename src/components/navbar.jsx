@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react';
-import {Menu, Row} from 'antd';
+import {Menu, Row, Layout} from 'antd';
 
+const {Header} = Layout;
 const {Item} = Menu;
 
 class NavBar extends PureComponent {
@@ -15,11 +16,11 @@ class NavBar extends PureComponent {
 
   render() {
     return (
-      <Row className='nav-bar'>
-        <Menu mode='horizontal' selectable={false}>
+      <Header className='nav-bar'>
+        <Menu mode='horizontal' selectable={false} theme='light'>
           <Item>Mapitude</Item>
         </Menu>
-      </Row>
+      </Header>
     );
   }
 }

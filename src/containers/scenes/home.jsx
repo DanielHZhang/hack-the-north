@@ -1,8 +1,10 @@
 import React, {PureComponent} from 'react';
-import {Row, Col} from 'antd';
+import {Layout} from 'antd';
 import Map from '../../components/map';
 import SideBar from '../../components/sidebar';
 import NavBar from '../../components/navbar';
+
+const {Content} = Layout;
 
 class Home extends PureComponent {
   static propTypes = {};
@@ -16,13 +18,15 @@ class Home extends PureComponent {
 
   render() {
     return (
-      <div>
+      <Layout>
         <NavBar />
-        <Row className='mapWidget'>
+        <Layout>
           <SideBar />
-          <Map />
-        </Row>
-      </div>
+          <Content>
+            <Map />
+          </Content>
+        </Layout>
+      </Layout>
     );
   }
 }

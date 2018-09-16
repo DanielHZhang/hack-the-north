@@ -7,6 +7,7 @@ import Firebase from 'firebase';
 // import '@firebase/storage';
 // import tranData from '../simpleTranData.json';
 import customerData from '../CustomerData.json';
+import {connect} from 'react-redux';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyA7NJkHK-UA--JVDQtUj7hX9IXWiKYuw-I',
@@ -16,122 +17,6 @@ const firebaseConfig = {
   storageBucket: 'mapitude-bdcaa.appspot.com',
   messagingSenderId: '104504510528',
 };
-
-function getAllStreets(fullJson) {
-  const streets = {};
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (streets[t.locationStreet]) {
-        return;
-      }
-      streets[t.locationStreet] = t.locationStreet;
-    });
-  });
-  return Object.values(streets);
-}
-
-function getAverage(fullJson, street, key) {
-  const parameter = [];
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        parameter.push(client[key]);
-      }
-    });
-  });
-  const total = parameter.reduce((acc, val) => acc + val, 0);
-  return total / parameter.length;
-}
-
-function getGenderCount(fullJson, street) {
-  const parameter = {female: 0, male: 0};
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        if (client.gender === 'Female') {
-          parameter.female += 1;
-        } else {
-          parameter.male += 1;
-        }
-      }
-    });
-  });
-  return parameter;
-}
-
-function getRelationshipCount(fullJson, street) {
-  const parameter = {single: 0, married: 0};
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        if (client.relationshipStatus === 'Married') {
-          parameter.married += 1;
-        } else {
-          parameter.single += 1;
-        }
-      }
-    });
-  });
-  return parameter;
-}
-
-function getNumberOfTransactions(fullJson, street) {
-  let parameter = 0;
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        parameter++;
-      }
-    });
-  });
-  return parameter;
-}
-
-function getTotalAmountSpent(fullJson, street) {
-  let parameter = 0;
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        parameter += t.currencyAmount;
-      }
-    });
-  });
-  return parameter;
-}
-
-function getAverageAmountSpent(fullJson, street) {
-  const parameter = [];
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        parameter.push(t.currencyAmount);
-      }
-    });
-  });
-  const total = parameter.reduce((acc, val) => acc + val, 0);
-  return total / parameter.length;
-}
 
 class Map extends Component {
   constructor(props) {
@@ -144,62 +29,87 @@ class Map extends Component {
         lng: -79.3491207954,
       },
       zoom: 14,
-      data: [],
       renderDots: true,
+      renderMap: true,
     };
-    this.addressMap = {};
-    this.clientData = customerData.customerList;
-    this.businessData = {};
+    this.defaultCenter = {
+      lat: 43.7050628845,
+      lng: -79.3491207954,
+    };
+    this.defaultZoom = 14;
+    // this.addressMap = {};
+    // this.clientData = customerData.customerList;
+    // this.businessData = {};
   }
 
-  componentDidMount() {
-    // Loop through all the data with the business address as the the key in the map.
-    // Calculate average age, gender, income, etc and add it to the value in map.
+  // componentDidMount() {
+  //   // Loop through all the data with the business address as the the key in the map.
+  //   // Calculate average age, gender, income, etc and add it to the value in map.
 
-    // Now map with each address associated with it's stats.
+  //   // Now map with each address associated with it's stats.
 
-    const transArr = [];
-    console.log(this.clientData);
-    this.clientData.forEach((user) => {
-      if (!user.transactions) {
-        return;
-      }
-      user.transactions.forEach((transaction) => {
-        if (transaction.locationLatitude && transaction.locationLongitude) {
-          // const lat = transaction.locationLatitude.toString().substring(0, 6);
-          // const long = transaction.locationLongitude.toString().substring(0, 6);
-          // const key = lat.concat(long);
-          const key = transaction.locationStreet;
+  //   const transArr = [];
+  //   console.log(this.clientData);
+  //   this.clientData.forEach((user) => {
+  //     if (!user.transactions) {
+  //       return;
+  //     }
+  //     user.transactions.forEach((transaction) => {
+  //       if (transaction.locationLatitude && transaction.locationLongitude) {
+  //         // const lat = transaction.locationLatitude.toString().substring(0, 6);
+  //         // const long = transaction.locationLongitude.toString().substring(0, 6);
+  //         // const key = lat.concat(long);
+  //         const key = transaction.locationStreet;
 
-          this.addressMap[key] = {
-            lat: transaction.locationLatitude.toString(),
-            lng: transaction.locationLongitude.toString(),
-            merchantName: transaction.merchantName,
-            address: transaction.locationStreet,
-          };
+  //         this.addressMap[key] = {
+  //           lat: transaction.locationLatitude.toString(),
+  //           lng: transaction.locationLongitude.toString(),
+  //           merchantName: transaction.merchantName,
+  //           address: transaction.locationStreet,
+  //         };
 
-          transArr.push({
-            lat: transaction.locationLatitude.toString(),
-            lng: transaction.locationLongitude.toString(),
-          });
-        }
-      });
-    });
-    this.addressMap = Object.values(this.addressMap);
-    this.setState({data: transArr});
-    getAllStreets(this.clientData).forEach((street) => {
-      if (!street) {
-        return;
-      }
-      this.businessData[street] = {
-        averageAge: getAverage(this.clientData, street, 'age'),
-        averageIncome: getAverage(this.clientData, street, 'totalIncome'),
-        genderDistribution: getGenderCount(this.clientData, street),
-        relationshipDistribution: getRelationshipCount(this.clientData, street),
-        numOfTransactions: getNumberOfTransactions(this.clientData, street),
-        totalAmountSpent: getTotalAmountSpent(this.clientData, street),
-        averageAmountSpent: getAverageAmountSpent(this.clientData, street),
-      };
+  //         transArr.push({
+  //           lat: transaction.locationLatitude.toString(),
+  //           lng: transaction.locationLongitude.toString(),
+  //         });
+  //       }
+  //     });
+  //   });
+  //   this.addressMap = Object.values(this.addressMap);
+  //   this.setState({data: transArr});
+  //   getAllStreets(this.clientData).forEach((street) => {
+  //     if (!street) {
+  //       return;
+  //     }
+  //     this.businessData[street] = {
+  //       averageAge: getAverage(this.clientData, street, 'age'),
+  //       averageIncome: getAverage(this.clientData, street, 'totalIncome'),
+  //       genderDistribution: getGenderCount(this.clientData, street),
+  //       relationshipDistribution: getRelationshipCount(this.clientData, street),
+  //       numOfTransactions: getNumberOfTransactions(this.clientData, street),
+  //       totalAmountSpent: getTotalAmountSpent(this.clientData, street),
+  //       averageAmountSpent: getAverageAmountSpent(this.clientData, street),
+  //     };
+  //   });
+  // }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.fullData !== this.props.fullData) {
+      console.log('?');
+      // this.googleMap.current.heatmap = {...this.googleMap.current.heatmap, data: ...this.props.data};
+      // this.googleMap.current.forceUpdate();
+      this.setState({renderMap: false});
+      setTimeout(() => {
+        this.setState({renderMap: true});
+        console.log('new render');
+      }, 1);
+    }
+  }
+
+  onMapChange = (event) => {
+    this.setState({
+      zoom: event.zoom,
+      center: event.center,
     });
   }
 
@@ -211,44 +121,51 @@ class Map extends Component {
     if (!this.state.renderDots) {
       return null;
     }
-    return this.addressMap.map((address, i) => (
-      <HeatDot key={i} {...address} {...this.businessData[address.address]} />
-    ));
+    return this.props.locationData.map((data, i) => <HeatDot key={i} {...data} />);
   }
 
   render() {
+    if (!this.props.fullData || !this.props.locationData) {
+      return <Icon type='loading' />;
+    }
     const heatmapOptions = {
       options: {
         radius: 40,
         opacity: 0.7,
         gradient: ['rgba(0, 255, 255, 0)', 'rgba(255, 0, 255, 1)', 'rgba(255, 255, 0, 2)'],
       },
-      positions: this.state.data,
+      positions: this.props.fullData,
     };
-    if (this.state.data.length === 0) {
-      return <Icon type='loading' />;
-    }
     return (
-      <Col span={19} className='map-container' onMouseUp={this.startRenderingDots}>
+      <Col className='map-container' onMouseUp={this.startRenderingDots}>
         <div className='map-wrapper fullscreen'>
-          <GoogleMapReact
+          {this.state.renderMap ? <GoogleMapReact
             className='google-map'
             bootstrapURLKeys={{key: GOOGLE_API_KEY}}
-            defaultCenter={this.state.center}
-            defaultZoom={this.state.zoom}
+            defaultCenter={this.defaultCenter}
+            defaultZoom={this.defaultZoom}
             heatmapLibrary={true}
             heatmap={heatmapOptions}
             onDrag={this.stopRenderingDots}
             onChildMouseLeave={this.startRenderingDots}
             onZoomAnimationStart={this.stopRenderingDots}
             onZoomAnimationEnd={this.startRenderingDots}
+            onChange={this.onMapChange}
           >
             {this.renderHeatDots()}
-          </GoogleMapReact>
+          </GoogleMapReact> : <Icon type='loading' />}
         </div>
       </Col>
     );
   }
 }
 
-export default Map;
+const mapStateToProps = ({filter}) => {
+  console.log('filter', filter);
+  return {
+    fullData: filter.heatMapFullData,
+    locationData: filter.heatMapLocationData,
+  };
+};
+
+export default connect(mapStateToProps)(Map);

@@ -1,7 +1,9 @@
 import {combineReducers} from 'redux';
+import {filterReducer, idReducer} from './filter';
 
 const rootReducer = combineReducers({
-  test: (state = {}) => state,
+  filter: filterReducer,
+  ids: idReducer,
 });
 
 export default rootReducer;

@@ -1,0 +1,79 @@
+import {FILTER_BY_MALE, FILTER_BY_FEMALE, FILTER_BY_BOTH} from '../actions';
+import JSONData from '../CustomerData.json';
+import {getAverage, getCount, getByGender} from './utils';
+
+function generateInitialState() {
+  const clientData = JSONData.customerList;
+  const heatMapFullData = [];
+  const heatMapLocationData = {};
+  clientData.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((trans) => {
+      if (!trans.locationLatitude || !trans.locationLongitude) {
+        return;
+      }
+      const {merchantName, locationStreet, locationLatitude, locationLongitude} = trans;
+      heatMapFullData.push({
+        lat: locationLatitude.toString(),
+        lng: locationLongitude.toString(),
+      });
+      if (!heatMapLocationData[locationStreet]) {
+        heatMapLocationData[locationStreet] = {
+          lat: locationLatitude.toString(),
+          lng: locationLongitude.toString(),
+          merchantName: merchantName,
+          address: locationStreet,
+          ...getAverage(clientData, locationStreet),
+          ...getCount(clientData, locationStreet),
+        };
+      }
+    });
+  });
+  const arrayifiedLocationData = Object.values(heatMapLocationData);
+  return {
+    heatMapFullData,
+    heatMapLocationData: arrayifiedLocationData,
+  };
+}
+
+export function filterReducer(state = generateInitialState(), action) {
+  switch (action.type) {
+    case FILTER_BY_MALE: {
+      return {
+        ...state,
+        heatMapFullData: getByGender(JSONData.customerList, 'male'),
+      };
+    }
+    case FILTER_BY_FEMALE: {
+      return {
+        ...state,
+        heatMapFullData: getByGender(JSONData.customerList, 'female'),
+      };
+    }
+    case FILTER_BY_BOTH: {
+      return {
+        ...state,
+        heatMapFullData: getByGender(JSONData.customerList, 'both'),
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
+
+function getInitialIds() {
+  const clientData = JSONData.customerList;
+  console.log(clientData);
+  return clientData.map((client) => client.id);
+}
+
+export function idReducer(state = getInitialIds(), action) {
+  switch (action.type) {
+    default: {
+      return state;
+    }
+  }
+}

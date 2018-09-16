@@ -1,8 +1,12 @@
 import React, {PureComponent} from 'react';
-import {Col, Menu, Radio, Select} from 'antd';
+import {connect} from 'react-redux';
+import {Col, Menu, Radio, Select, Row, Layout} from 'antd';
+import {filterBy} from '../actions';
 
+const {Sider} = Layout;
 const {Item} = Menu;
 const {Group} = Radio;
+const {Option} = Select;
 
 class SideBar extends PureComponent {
   static propTypes = {};
@@ -14,22 +18,50 @@ class SideBar extends PureComponent {
     this.state = {};
   }
 
+  onGenderChange = (event) => {
+    console.log(event);
+    this.props.filterBy(event.target.value);
+  };
+
+  renderOptions(array) {
+    return array.map((e) => <Option key={e}>{e.slice(37)}</Option>);
+  }
+
   render() {
     return (
-      <Col span={5} className='mapFilters'>
-        <Group>
-          <Radio className='radio-item' value={1}>Option</Radio>
-          <Radio className='radio-item' value={2}>Option 2</Radio>
-        </Group>
-        <Select>
-          <Select.Option key='cool'>Test</Select.Option>
-        </Select>
-        {/* <Menu>
-          <Item>Test</Item>
-        </Menu> */}
-      </Col>
+      <Sider className='side-bar' width={250} theme='light'>
+        <Row>
+          <Group onChange={this.onGenderChange}>
+            Gender:
+            <Radio className='radio-item' value='both'>
+              All
+            </Radio>
+            <Radio className='radio-item' value='female'>
+              Female
+            </Radio>
+            <Radio className='radio-item' value='male'>
+              Male
+            </Radio>
+          </Group>
+        </Row>
+        <Row>
+          Search by id:
+          <Select defaultValue={this.props.ids[0]} showSearch={true}>
+            {this.renderOptions(this.props.ids)}
+          </Select>
+        </Row>
+      </Sider>
     );
   }
 }
 
-export default SideBar;
+function mapStateToProps({ids}) {
+  return {
+    ids,
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  {filterBy}
+)(SideBar);

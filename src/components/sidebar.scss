@@ -1,5 +1,11 @@
-.radio-item {
-  display: block;
-  height: 30px;
-  line-height: 30px;
+.side-bar {
+  padding-left: 12px;
+  .ant-select {
+    width: 100%;
+  }
+  .radio-item {
+    // display: block;
+    height: 30px;
+    line-height: 30px;
+  }
 }
