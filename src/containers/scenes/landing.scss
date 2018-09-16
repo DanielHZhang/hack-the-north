@@ -1,5 +1,6 @@
+
 .landing {
-  background-color: rgba(0, 0, 0, 0.363);
+  background-color: rgba(0, 155, 0, 0.534);
 
   #background {
     position: absolute;
@@ -10,21 +11,60 @@
     z-index: 0;
   }
 
+  .headerContainer {
+    z-index: 10;
+    position: absolute;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  .headerTitleContainer {
+    font-size: 5rem;
+    letter-spacing: 3rem;
+    margin-bottom: 5rem;
+    animation: fadeInFromTop 1s ease-in;
+  }
+
+  .headerButton {
+    width: 25%;
+    height: 50px;
+    animation: fadeInFromBottom 1s ease-in;
+    font-size: 1.5rem;
+    font-weight: 200;
+    letter-spacing: 2px;
+  }
+
   .header {
-    margin-top: 6rem;
+    margin-top: 8rem;
     text-align: center;
     font-size: 5rem;
-
-    .letter {
-      width: 1em;
-      position: absolute;
-      left: 0;
-      right: 0;
-    }
   }
 
   .sub {
-    margin-top: 3rem;
+    // margin-top: 1rem;
+  }
+}
+
+@keyframes fadeInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px);
   }
 
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInFromBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
