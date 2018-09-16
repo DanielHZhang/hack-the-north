@@ -2,6 +2,7 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Col, Menu, Radio, Select, Row, Layout, Slider, Divider} from 'antd';
 import {filterBy} from '../actions';
+import {debounce} from '../reducers/utils';
 
 const {Sider} = Layout;
 const {Item} = Menu;
@@ -18,13 +19,22 @@ class SideBar extends PureComponent {
     this.state = {};
   }
 
+  onAgeChange = debounce((event) => {
+    this.props.filterBy('age', event);
+  }, 200);
+
+  onIncomeChange = debounce((event) => {
+    console.log(event);
+    this.props.filterBy('income', event);
+  }, 200);
+
   onMartialChange = (event) => {
     // console.log(event);
     this.props.filterBy(event.target.value);
-  }
+  };
 
   onGenderChange = (event) => {
-    console.log(event);
+    // console.log(event);
     this.props.filterBy(event.target.value);
   };
 
@@ -42,17 +52,18 @@ class SideBar extends PureComponent {
 
   render() {
     const marks = {0: '$0', 500000: '$500k'};
+    const ageMarks = {0: 0, 120: 120};
     return (
       <Sider className='side-bar' width={250} theme='light'>
         <Row>
-          <div style={{fontWeight: 500, marginBottom: '4px'}}>Search by name:</div>
+          <div style={{fontWeight: 500, marginBottom: '4px', fontSize: '16px'}}>Search by name:</div>
           <Select defaultValue='Everyone' showSearch={true} onSelect={this.onSelect}>
             {this.renderOptions(this.props.names)}
           </Select>
         </Row>
-        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Divider style={{margin: '18px 0 10px 0'}} />
         <Row>
-          <div style={{fontWeight: 500, marginBottom: '4px'}}>Gender:</div>
+          <div style={{fontWeight: 500, marginBottom: '4px', fontSize: '16px'}}>Gender:</div>
           <Group onChange={this.onGenderChange} defaultValue='both'>
             <Radio className='radio-item' value='both'>
               All
@@ -65,9 +76,9 @@ class SideBar extends PureComponent {
             </Radio>
           </Group>
         </Row>
-        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Divider style={{margin: '18px 0 10px 0'}} />
         <Row>
-          <div style={{fontWeight: 500, marginBottom: '4px'}}>Marital status:</div>
+          <div style={{fontWeight: 500, marginBottom: '4px', fontSize: '16px'}}>Marital status:</div>
           <Group onChange={this.onMartialChange} defaultValue='marital-both'>
             <Radio className='radio-item' value='marital-both'>
               All
@@ -80,15 +91,29 @@ class SideBar extends PureComponent {
             </Radio>
           </Group>
         </Row>
-        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Divider style={{margin: '18px 0 10px 0'}} />
         <Row>
-          <div style={{fontWeight: 500, marginBottom: '4px'}}>Annual income:</div>
-          <Slider range={true} min={0} max={500000} marks={marks} />
+          <div style={{fontWeight: 500, marginBottom: '4px', fontSize: '16px'}}>Annual income:</div>
+          <Slider
+            range={true}
+            min={0}
+            max={500000}
+            defaultValue={[0, 500000]}
+            marks={marks}
+            onChange={this.onIncomeChange}
+          />
         </Row>
-        <Divider style={{margin: '12px 0 6px 0'}} />
+        <Divider style={{margin: '18px 0 10px 0'}} />
         <Row>
-          <div style={{fontWeight: 500, marginBottom: '4px'}}>Age range:</div>
-          <Slider range={true} />
+          <div style={{fontWeight: 500, marginBottom: '4px', fontSize: '16px'}}>Age range:</div>
+          <Slider
+            range={true}
+            min={0}
+            max={120}
+            defaultValue={[0, 120]}
+            marks={ageMarks}
+            onChange={this.onAgeChange}
+          />
         </Row>
       </Sider>
     );

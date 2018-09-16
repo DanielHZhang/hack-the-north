@@ -1,6 +1,6 @@
-import {FILTER_BY_MALE, FILTER_BY_FEMALE, FILTER_BY_BOTH, FILTER_BY_NAME, FILTER_BY_SINGLE, FILTER_BY_MARRIED} from '../actions';
+import {FILTER_BY_MALE, FILTER_BY_FEMALE, FILTER_BY_BOTH, FILTER_BY_NAME, FILTER_BY_SINGLE, FILTER_BY_MARRIED, FILTER_BY_INCOME, FILTER_BY_AGE} from '../actions';
 import JSONData from '../CustomerData.json';
-import {getAverage, getCount, getByGender, getByName, getByMaritalStatus} from './utils';
+import {getAverage, getCount, getByGender, getByName, getByMaritalStatus, getByIncome, getByAge} from './utils';
 
 function generateInitialState() {
   const clientData = JSONData.customerList;
@@ -74,6 +74,18 @@ export function filterReducer(state = generateInitialState(), action) {
       return {
         ...state,
         heatMapFullData: getByMaritalStatus(JSONData.customerList, 'married'),
+      };
+    }
+    case FILTER_BY_INCOME: {
+      return {
+        ...state,
+        heatMapFullData: getByIncome(JSONData.customerList, action.payload),
+      };
+    }
+    case FILTER_BY_AGE: {
+      return {
+        ...state,
+        heatMapFullData: getByAge(JSONData.customerList, action.payload),
       };
     }
     default: {

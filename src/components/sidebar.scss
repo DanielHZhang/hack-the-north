@@ -1,4 +1,5 @@
 .side-bar {
+  padding-top: 6px;
   padding-left: 12px;
   .ant-select {
     width: 100%;
@@ -8,4 +9,10 @@
     height: 30px;
     line-height: 30px;
   }
+  .ant-slider-mark {
+    .ant-slider-mark-text:not(:first-child) {
+      transform: translateX(-10px);
+    }
+  }
+
 }

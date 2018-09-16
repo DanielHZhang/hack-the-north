@@ -102,10 +102,12 @@ export function getByName(fullJson, name) {
     }
     if (`${client.givenName} ${client.surname}` === name) {
       client.transactions.forEach((t) => {
-        heatMapFullData.push({
-          lat: t.locationLatitude,
-          lng: t.locationLongitude,
-        });
+        if (t.locationLatitude && t.locationLongitude) {
+          heatMapFullData.push({
+            lat: t.locationLatitude,
+            lng: t.locationLongitude,
+          });
+        }
       });
     }
   });
@@ -122,22 +124,76 @@ export function getByMaritalStatus(fullJson, maritalStatus) {
     if (maritalStatus === 'married') {
       if (client.relationshipStatus.toLowerCase() === maritalStatus) {
         client.transactions.forEach((t) => {
-          heatMapFullData.push({
-            lat: t.locationLatitude,
-            lng: t.locationLongitude,
-          });
+          if (t.locationLatitude && t.locationLongitude) {
+            heatMapFullData.push({
+              lat: t.locationLatitude,
+              lng: t.locationLongitude,
+            });
+          }
         });
       }
     } else {
       if (client.relationshipStatus.toLowerCase() !== 'married') {
         client.transactions.forEach((t) => {
-          heatMapFullData.push({
-            lat: t.locationLatitude,
-            lng: t.locationLongitude,
-          });
+          if (t.locationLatitude && t.locationLongitude) {
+            heatMapFullData.push({
+              lat: t.locationLatitude,
+              lng: t.locationLongitude,
+            });
+          }
         });
       }
     }
   });
   return heatMapFullData;
+}
+
+export function getByIncome(fullJson, range) {
+  const heatMapFullData = [];
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    if (client.totalIncome > range[0] && client.totalIncome < range[1]) {
+      client.transactions.forEach((t) => {
+        if (t.locationLatitude && t.locationLongitude) {
+          heatMapFullData.push({
+            lat: t.locationLatitude,
+            lng: t.locationLongitude,
+          });
+        }
+      });
+    }
+  });
+
+  return heatMapFullData;
+}
+
+export function getByAge(fullJson, ageRange) {
+  const heatMapFullData = [];
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    if (client.age > ageRange[0] && client.totalIncome < ageRange[1]) {
+      client.transactions.forEach((t) => {
+        if (t.locationLatitude && t.locationLongitude) {
+          heatMapFullData.push({
+            lat: t.locationLatitude,
+            lng: t.locationLongitude,
+          });
+        }
+      });
+    }
+  });
+  return heatMapFullData;
+}
+
+export function debounce(fn, interval) {
+  let timer;
+  return function debounced() {
+    clearTimeout(timer);
+    const args = arguments;
+    timer = setTimeout(() => fn.apply(this, args), interval);
+  };
 }
