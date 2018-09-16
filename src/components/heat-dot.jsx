@@ -21,7 +21,7 @@ class Heatmap extends Component {
       height: `${2 * zoom}px`,
       transform: 'translateX(-15px)',
     };
-
+    console.log(this.props);
     return (
       <Popover
         trigger='click'

@@ -17,6 +17,122 @@ const firebaseConfig = {
   messagingSenderId: '104504510528',
 };
 
+function getAllStreets(fullJson) {
+  const streets = {};
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (streets[t.locationStreet]) {
+        return;
+      }
+      streets[t.locationStreet] = t.locationStreet;
+    });
+  });
+  return Object.values(streets);
+}
+
+function getAverage(fullJson, street, key) {
+  const parameter = [];
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        parameter.push(client[key]);
+      }
+    });
+  });
+  const total = parameter.reduce((acc, val) => acc + val, 0);
+  return total / parameter.length;
+}
+
+function getGenderCount(fullJson, street) {
+  const parameter = {female: 0, male: 0};
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        if (client.gender === 'Female') {
+          parameter.female += 1;
+        } else {
+          parameter.male += 1;
+        }
+      }
+    });
+  });
+  return parameter;
+}
+
+function getRelationshipCount(fullJson, street) {
+  const parameter = {single: 0, married: 0};
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        if (client.relationshipStatus === 'Married') {
+          parameter.married += 1;
+        } else {
+          parameter.single += 1;
+        }
+      }
+    });
+  });
+  return parameter;
+}
+
+function getNumberOfTransactions(fullJson, street) {
+  let parameter = 0;
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        parameter++;
+      }
+    });
+  });
+  return parameter;
+}
+
+function getTotalAmountSpent(fullJson, street) {
+  let parameter = 0;
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        parameter += t.currencyAmount;
+      }
+    });
+  });
+  return parameter;
+}
+
+function getAverageAmountSpent(fullJson, street) {
+  const parameter = [];
+  fullJson.forEach((client) => {
+    if (!client.transactions) {
+      return;
+    }
+    client.transactions.forEach((t) => {
+      if (t.locationStreet === street) {
+        parameter.push(t.currencyAmount);
+      }
+    });
+  });
+  const total = parameter.reduce((acc, val) => acc + val, 0);
+  return total / parameter.length;
+}
+
 class Map extends Component {
   constructor(props) {
     super(props);
@@ -68,21 +184,29 @@ class Map extends Component {
       });
     });
     this.setState({data: transArr});
-    const streets = getAllStreets(this.clientData);
-    streets.forEach((street) => {
-      const averageAge = getAverageAge(this.clientData, street);
+    getAllStreets(this.clientData).forEach((street) => {
+      if (!street) {
+        return;
+      }
+      this.businessData[street] = {
+        averageAge: getAverage(this.clientData, street, 'age'),
+        averageIncome: getAverage(this.clientData, street, 'totalIncome'),
+        genderDistribution: getGenderCount(this.clientData, street),
+        relationshipDistribution: getRelationshipCount(this.clientData, street),
+        numOfTransactions: getNumberOfTransactions(this.clientData, street),
+        totalAmountSpent: getTotalAmountSpent(this.clientData, street),
+        averageAmountSpent: getAverageAmountSpent(this.clientData, street),
+      };
     });
-
-    console.log(this.businessData);
   }
 
   renderHeatDots() {
-    return Object.values(this.addressMap).map((address, i) => <HeatDot key={i} {...address} />);
+    return Object.values(this.addressMap).map((address, i) => (
+      <HeatDot key={i} {...address} businessData={this.businessData[address.address]} />
+    ));
   }
 
   render() {
-    // console.log('DATA: ', custData);
-
     const heatmapOptions = {
       options: {
         radius: 40,
@@ -111,38 +235,6 @@ class Map extends Component {
       </Col>
     );
   }
-}
-
-function getAllStreets(fullJson) {
-  const streets = {};
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (streets[t.locationStreet]) {
-        return;
-      }
-      streets[t.locationStreet] = t.locationStreet;
-    });
-  });
-  return Object.values(streets);
-}
-
-function getAverageAge(fullJson, street) {
-  const ages = [];
-  fullJson.forEach((client) => {
-    if (!client.transactions) {
-      return;
-    }
-    client.transactions.forEach((t) => {
-      if (t.locationStreet === street) {
-        ages.push(client.age);
-      }
-    });
-  });
-  const total = ages.reduce((acc, val) => acc + val, 0);
-  return total / ages.length;
 }
 
 export default Map;
