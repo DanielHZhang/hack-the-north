@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Popover, Divider} from 'antd';
+import {Popover, Divider, Row, Col} from 'antd';
 
 class Heatmap extends Component {
   static propTypes = {
@@ -14,23 +14,25 @@ class Heatmap extends Component {
 
   locationInfo = () => (
     <div className='businessData'>
-      <div><span>Average Age:</span> {Math.round(this.props.averageAge)}</div>
+      <Row type='flex' justify='space-between'>
+        <Col className='bold'>Average age:</Col>
+        <Col>{Math.round(this.props.averageAge)}</Col>
+      </Row>
       <Divider />
-      <div> <span>Average Income:</span>  {Math.round(this.props.averageIncome)}</div>
+      <Row type='flex' justify='space-between'>
+        <Col className='bold'>Average income:</Col>
+        <Col>${Math.round(this.props.averageIncome)}</Col>
+      </Row>
       <Divider />
-      <div>Female: {this.props.genderDistribution.female}</div>
+      <Row type='flex' justify='space-between'>
+        <Col className='bold'>Total spent:</Col>
+        <Col>${Math.round(this.props.totalAmountSpent)}</Col>
+      </Row>
       <Divider />
-      <div>Male: {this.props.genderDistribution.male}</div>
-      <Divider />
-      <div>Married: {this.props.relationshipDistribution.married}</div>
-      <Divider />
-      <div>Single: {this.props.relationshipDistribution.single}</div>
-      <Divider />
-      <div>Num of Transactions: {this.props.numOfTransactions}</div>
-      <Divider />
-      <div>Total Amount spent: ${Math.round(this.props.totalAmountSpent)}</div>
-      <Divider />
-      <div>Average amount spent: ${Math.round(this.props.averageAmountSpent)}</div>
+      <Row type='flex' justify='space-between'>
+        <Col className='bold'>Average spent:</Col>
+        <Col>${Math.round(this.props.averageAmountSpent)}</Col>
+      </Row>
     </div>
   );
 
@@ -39,14 +41,13 @@ class Heatmap extends Component {
     const style = {
       width: `${2 * zoom}px`,
       height: `${2 * zoom}px`,
-      transform: 'translateX(-15px)',
+      transform: 'translate(-15px, -10px)',
     };
-    console.log(this.props);
     return (
       <Popover
+        overlayClassName='business-data-popover'
         trigger='click'
         title={this.props.merchantName}
-        // style={{transform: 'translateX(-5px)'}}
         content={this.locationInfo()}
       >
         <div className='dot' style={style} />

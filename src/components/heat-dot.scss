@@ -4,13 +4,21 @@
   }
 }
 
-.businessData {
-  div {
-    font-weight: 200;
-    font-size: 1rem;
+.business-data-popover {
+  .ant-popover-title {
+    font-size: 1.2rem;
+    padding: 8px 16px;
   }
-
-  .ant-divider {
-    margin: 8px 0;
+  .ant-popover-inner-content {
+    .businessData {
+      min-width: 200px;
+      color: rgb(63, 63, 63);
+      .bold {
+        font-weight: 500;
+      }
+      .ant-divider {
+        margin: 8px 0;
+      }
+    }
   }
 }
